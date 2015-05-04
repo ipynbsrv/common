@@ -7,5 +7,9 @@ setup(
     version="0.0.1",
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    namespace_packages=['ipynbsrv']
+    namespace_packages=['ipynbsrv'],
+    install_requires=[
+        'ipynbsrv-contract',
+        'rsa==3.1.4'
+    ],
 )
