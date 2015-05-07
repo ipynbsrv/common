@@ -15,7 +15,7 @@ class RSA(EncryptionService, IntegrityService):
     :param hash_algorithm: The hashing algorithm to use when signing/verifying integrity.
     '''
     def __init__(self, hash_algorithm='SHA-256'):
-        self.hash_algorithm = hash_algorithm
+        self._hash_algorithm = hash_algorithm
 
     def decrypt(self, text, key, **kwargs):
         return rsa.decrypt(text, key)
@@ -24,7 +24,7 @@ class RSA(EncryptionService, IntegrityService):
         return rsa.encrypt(text, key)
 
     def sign(self, text, key, **kwargs):
-        hash_algorithm = self.hash_algorithm
+        hash_algorithm = self._hash_algorithm
         if kwargs.get('hash_algorithm'):
             hash_algorithm = kwargs.get('hash_algorithm')
         return rsa.sign(text, key, hash_algorithm)
