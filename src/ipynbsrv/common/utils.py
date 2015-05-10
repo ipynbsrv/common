@@ -24,7 +24,7 @@ class ClassLoader(object):
     '''
     Converts the arguments string (as per the defined format) into a dict.
 
-    :param args: The arguments string.
+    :param args: The arguments string. (i.e. 'version=1.18,arg2=3')
     '''
     @staticmethod
     def args_as_dict(args):
