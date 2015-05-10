@@ -8,6 +8,7 @@ class PrimitiveContainerHostSelectionService(ContainerHostSelectionService):
 
     last = 0
 
+    @staticmethod
     def get_server(self, count):
         if count == 1:
             return 0
