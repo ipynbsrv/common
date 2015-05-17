@@ -10,6 +10,7 @@ setup(
     namespace_packages=['ipynbsrv'],
     install_requires=[
         'ipynbsrv-contract',
+        'pathlib==1.0.1',
         'rsa==3.1.4'
     ],
 )
