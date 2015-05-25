@@ -38,6 +38,8 @@ class ClassLoader(object):
                     args_dict[key] = value
         elif isinstance(args, dict):
             args_dict = args
+        elif args is None:
+            return None
         else:
             raise ValueError("Only dictionaries and strings can be converted. %s given." % type(args))
 
