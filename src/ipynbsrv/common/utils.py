@@ -1,3 +1,4 @@
+import ast
 import importlib
 from pathlib import Path
 import shutil
@@ -16,7 +17,7 @@ class ClassLoader(object):
 
     :param module: The absolute path of the module where the class is located.
     :param klass: The class' to load name.
-    :param args: A string of optional arguments to pass to the class' init method (format: arg1=value,arg2=value).
+    :param args: A string of optional arguments to pass to the class' init method (format: { "arg1": "value", "arg2" : "value" }).
     '''
     def __init__(self, module, klass, args=None):
         self._module = importlib.import_module(module)
@@ -26,16 +27,13 @@ class ClassLoader(object):
     '''
     Converts the arguments string (as per the defined format) into a dict.
 
-    :param args: The arguments string. (i.e. 'version=1.18,arg2=3')
+    :param args: The arguments string in json form. (i.e. '{ "version": "1.18" , "arg2": "3"}' ) 
     '''
     @staticmethod
     def args_as_dict(args):
         args_dict = {}
         if args and isinstance(args, basestring):
-            for arg in args.split(','):
-                if arg.count('=') == 1:
-                    key, value = arg.split('=', 1)
-                    args_dict[key] = value
+            args_dict = ast.literal.eval(args)
         elif isinstance(args, dict):
             args_dict = args
         elif args:
@@ -46,7 +44,7 @@ class ClassLoader(object):
     '''
     Returns an instance of the to be loaded class.
 
-    :param args: Optional arguments to pass to the __init__ method (format: arg1=value,arg2=value).
+    :param args: Optional arguments to pass to the __init__ method (format: { "arg1": "value", "arg2" : "value" }).
     '''
     def get_instance(self, args=None):
         arguments = self._args
