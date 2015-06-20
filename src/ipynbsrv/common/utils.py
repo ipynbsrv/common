@@ -27,13 +27,17 @@ class ClassLoader(object):
     '''
     Converts the arguments string (as per the defined format) into a dict.
 
-    :param args: The arguments string in json form. (i.e. '{ "version": "1.18" , "arg2": "3"}' ) 
+    :param args: The arguments string in json form. (i.e. '{ "version": "1.18" , "arg2": "3"}' )
     '''
     @staticmethod
     def args_as_dict(args):
         args_dict = {}
         if args and isinstance(args, basestring):
-            args_dict = ast.literal.eval(args)
+            try:
+                args_dict = ast.literal_eval(args)
+            except SyntaxError as e:
+                print("args have a invalid format. Please use json format (args provided: {0})".format(args))
+                raise e
         elif isinstance(args, dict):
             args_dict = args
         elif args:
