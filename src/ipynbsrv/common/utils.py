@@ -197,7 +197,7 @@ class FileSystem(object):
 
         created = (self._path / dir_name)
         created.mkdir()
-        return FileSystem(self.get_full_path(created.name))
+        return FileSystem((self._path / created).resolve().as_posix())  # HACK: get_full_path raises error
 
     def rm_dir(self, dir_name='.'):
         """
