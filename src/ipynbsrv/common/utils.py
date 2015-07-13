@@ -1,6 +1,9 @@
 import ast
+from grp import getgrnam
 import importlib
+import os
 from pathlib import Path
+from pwd import getpwnam
 import shutil
 
 
@@ -77,7 +80,7 @@ class FileSystem(object):
     '''
 
     '''
-    TODO: make base_dir a property because _path needs to be changed if is changes
+    TODO: make base_dir a property because _path needs to be changed if changed
     '''
     def __init__(self, base_dir='.'):
         self.base_dir = base_dir
@@ -92,15 +95,15 @@ class FileSystem(object):
         return (self._path / dir_name).exists()
 
     '''
-    Checks if the provided path exists.
+    Returns the full path as a posix string.
 
-    :param path: The path to check.
+    :param path: The path to get the full posix path for.
     '''
     def get_full_path(self, path='.'):
         if not self.exists(path):
             raise IOError("Path does not exists.")
 
-        return (self._path / path).resolve()
+        return (self._path / path).resolve().as_posix()
 
     '''
     Returns the group name of the provided path.
@@ -188,7 +191,7 @@ class FileSystem(object):
 
         created = (self._path / dir_name)
         created.mkdir()
-        return FileSystem(created.name)
+        return FileSystem(self.get_full_path(created.name))  # FIXME: raises dot not exist
 
     '''
     Removes the directory with the given dir_name.
@@ -214,13 +217,55 @@ class FileSystem(object):
         if not self.is_dir(dir_name):
             raise IOError("Path is not a directory.")
 
-        shutil.rmtree((self._path / dir_name).name)
+        shutil.rmtree(self.get_full_path(dir_name))
+
+    '''
+    Sets the path's group (by group name).
+
+    :param path: The path to set the group on.
+    :param group: The name of the group to set.
+    '''
+    def set_group(self, group, path='.'):
+        self.set_gid(getgrnam(group).gr_gid, path)
+
+    '''
+    Sets the path's group (by group ID).
+
+    :param path: The path to set the group on.
+    :param gid: The group's ID.
+    '''
+    def set_gid(self, gid, path='.'):
+        if not self.exists(path):
+            raise IOError("Path does not exist.")
+
+        os.chown(self.get_full_path(path), -1, gid)
 
     '''
     TODO
     '''
-    def set_mode(self, path, mode):
+    def set_mode(self, mode, path='.'):
         if not self.exists(path):
             raise IOError("Path does not exist.")
 
         (self._path / path).chmod(mode)
+
+    '''
+    Sets the path's owner (by username).
+
+    :param path: The path to set the owner on.
+    :param owner: The username of the new path owner.
+    '''
+    def set_owner(self, owner, path='.'):
+        self.set_uid(getpwnam(owner).pw_uid, path)
+
+    '''
+    Sets the path's owner (by user ID).
+
+    :param path: The path to set the owner on.
+    :param uid: The user's ID.
+    '''
+    def set_uid(self, uid, path='.'):
+        if not self.exists(path):
+            raise IOError("Path does not exist.")
+
+        os.chown(self.get_full_path(path), uid, -1)
