@@ -174,6 +174,7 @@ class FileSystem(object):
         """
         if not self.exists(path):
             raise IOError("Path does not exist.")
+
         return (self._path / path).is_dir()
 
     def is_file(self, path='.'):
