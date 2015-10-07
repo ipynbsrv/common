@@ -1,4 +1,4 @@
-from ipynbsrv.contract.services import EncryptionService, IntegrityService
+from coco.contract.services import EncryptionService, IntegrityService
 import rsa
 
 
